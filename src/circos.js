@@ -2,7 +2,6 @@ import defaultsDeep from 'lodash/defaultsDeep'
 import forEach from 'lodash/forEach'
 import isArray from 'lodash/isArray'
 import map from 'lodash/map'
-import {select} from 'd3-selection'
 import Layout from './layout/index'
 import render from './render'
 import Text from './tracks/Text'
@@ -14,6 +13,7 @@ import Line from './tracks/Line'
 import Scatter from './tracks/Scatter'
 import Stack from './tracks/Stack'
 import {initClipboard} from './clipboard'
+import * as d3 from 'd3';
 
 const defaultConf = {
   width: 700,
