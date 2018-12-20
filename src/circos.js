@@ -22,25 +22,86 @@ const defaultConf = {
   defaultTrackWidth: 10
 }
 
+const zoom = d3.zoom().scaleExtent([1,2]).on("zoom", function() {
+  d3.select('.all').attr("transform", d3.event.transform)
+});
+
+
+function download_svg(){
+  if (document.getElementById('svg-child').hasChildNodes() === true) {
+    const circos_svg = document.getElementById('svg-child');
+    const svg_as_xml = (new XMLSerializer).serializeToString(circos_svg);
+    const svg_data = `data:image/svg+xml,${encodeURIComponent(svg_as_xml)}`
+    const link = document.getElementById('download-link') 
+    link.setAttribute("href", svg_data);
+    link.setAttribute("download", "circos.svg");
+    link.click();
+  }
+}
+
+// Add download PNG button work in progress
+// function download_png(){
+//   console.warn('png')
+//   if (document.getElementById('svg-child').hasChildNodes() === true) {
+//     const circos_svg = document.getElementById('svg-child');
+//     const svg_as_xml = (new XMLSerializer).serializeToString(circos_svg);
+//     var canvas = document.getElementById('canvas')
+//     canvas.setAttribute("width", 800);
+//     canvas.setAttribute("height", 800);
+//     canvg(canvas, circos_svg);
+//   }
+// }
+
 class Core {
   constructor (conf) {
     this.tracks = {}
     this._layout = null
     this.conf = defaultsDeep(conf, defaultConf)
-    const container = select(this.conf.container).append('div')
-      .style('position', 'relative')
+
+    // Apply style for positioning button
+    const container = d3.select(this.conf.container).style('position', 'relative');
     this.svg = container.append('svg')
-    if (select('body').select('.circos-tooltip').empty()) {
-      this.tip = select('body').append('div')
+    console.warn('this.conf', this.conf)
+    console.warn('conf', conf)
+    if (conf.enableZoomPan === true) {
+    // Apply zoom & pan handler
+      this.svg.attr('id', 'svg-child').call(zoom)
+      this.svg.call(zoom.transform, d3.zoomIdentity.translate(conf.width/2, conf.height/2));
+
+      // Reset to center on dbl click
+      this.svg.on('dblclick.zoom', function(){d3.select('#svg-child').call(zoom.transform, d3.zoomIdentity.translate(conf.width/2, conf.height/2));})
+    }
+
+    if (conf.enableDownloadSVG === true) {
+    // Add svg download button
+    const button_svg = d3.select('#' + this.conf.container.id).append("button")
+      .style('position', 'absolute')
+      .style('top', '5px')
+      .style('right', '5px')
+      .text("Download SVG")
+      .attr("id", "button")
+      .classed("Button", true)
+      .on("click.button", function() {download_svg()})
+        .append('a')
+        .attr('id', 'download-link')
+    }
+
+    // Add Download PNG button (work in progress)
+    // var button_png = d3.select('#Circos-container').append("button").style('position', 'absolute').style('top', '5px').style('right', '150px').text("Download PNG").attr("id", "button").classed("Button", true).on("click.button", function() {download_png()})
+    // var button_link_png = button_svg.append("a").attr('id', 'download-link-png')
+    // var canvas_add = d3.select('body').append('canvas').attr('id', 'canvas')
+    
+    if (d3.select('body').select('.circos-tooltip').empty()) {
+      this.tip = d3.select('body').append('div')
       .attr('class', 'circos-tooltip')
       .style('opacity', 0)
     } else {
-      this.tip = select('body').select('.circos-tooltip')
+      this.tip = d3.select('body').select('.circos-tooltip')
     }
 
     this.clipboard = initClipboard(this.conf.container)
   }
-
+  
   removeTracks (trackIds) {
     if (typeof (trackIds) === 'undefined') {
       map(this.tracks, (track, id) => {
@@ -102,6 +163,7 @@ class Core {
   render (ids, removeTracks) {
     render(ids, removeTracks, this)
   }
+  
 }
 
 const Circos = (conf) => {
