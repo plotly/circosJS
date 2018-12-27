@@ -39,19 +39,6 @@ function download_svg(){
   }
 }
 
-// Add download PNG button work in progress
-// function download_png(){
-//   console.warn('png')
-//   if (document.getElementById('svg-child').hasChildNodes() === true) {
-//     const circos_svg = document.getElementById('svg-child');
-//     const svg_as_xml = (new XMLSerializer).serializeToString(circos_svg);
-//     var canvas = document.getElementById('canvas')
-//     canvas.setAttribute("width", 800);
-//     canvas.setAttribute("height", 800);
-//     canvg(canvas, circos_svg);
-//   }
-// }
-
 class Core {
   constructor (conf) {
     this.tracks = {}
@@ -76,8 +63,8 @@ class Core {
     // Add svg download button
     const button_svg = d3.select('#' + this.conf.container.id).append("button")
       .style('position', 'absolute')
-      .style('top', '5px')
-      .style('right', '5px')
+      .style('top', '5%')
+      .style('right', '5%')
       .text("Download SVG")
       .attr("id", "button")
       .classed("Button", true)
@@ -86,14 +73,11 @@ class Core {
         .attr('id', 'download-link')
     }
 
-    // Add Download PNG button (work in progress)
-    // var button_png = d3.select('#Circos-container').append("button").style('position', 'absolute').style('top', '5px').style('right', '150px').text("Download PNG").attr("id", "button").classed("Button", true).on("click.button", function() {download_png()})
-    // var button_link_png = button_svg.append("a").attr('id', 'download-link-png')
-    // var canvas_add = d3.select('body').append('canvas').attr('id', 'canvas')
     
     if (d3.select('body').select('.circos-tooltip').empty()) {
       this.tip = d3.select('body').append('div')
       .attr('class', 'circos-tooltip')
+      .attr('position', 'fixed')
       .style('opacity', 0)
     } else {
       this.tip = d3.select('body').select('.circos-tooltip')
@@ -102,6 +86,10 @@ class Core {
     this.clipboard = initClipboard(this.conf.container)
   }
   
+  removeToolTip() {
+    this.tip.remove()
+  }
+
   removeTracks (trackIds) {
     if (typeof (trackIds) === 'undefined') {
       map(this.tracks, (track, id) => {
@@ -163,8 +151,8 @@ class Core {
   render (ids, removeTracks) {
     render(ids, removeTracks, this)
   }
-  
 }
+
 
 const Circos = (conf) => {
   const instance = new Core(conf)
