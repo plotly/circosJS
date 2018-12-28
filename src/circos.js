@@ -80,7 +80,7 @@ class Core {
     if (select('body').select('.circos-tooltip').empty()) {
       this.tip = select('body').append('div')
       .attr('class', 'circos-tooltip')
-      .attr('position', 'fixed')
+      .style('position', 'fixed')
       .style('opacity', 0)
     } else {
       this.tip = select('body').select('.circos-tooltip')
