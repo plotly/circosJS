@@ -2,6 +2,8 @@ import defaultsDeep from 'lodash/defaultsDeep'
 import forEach from 'lodash/forEach'
 import isArray from 'lodash/isArray'
 import map from 'lodash/map'
+import {select, event} from 'd3-selection'
+import {zoom, zoomIdentity} from 'd3-zoom';
 import Layout from './layout/index'
 import render from './render'
 import Text from './tracks/Text'
@@ -13,7 +15,8 @@ import Line from './tracks/Line'
 import Scatter from './tracks/Scatter'
 import Stack from './tracks/Stack'
 import {initClipboard} from './clipboard'
-import * as d3 from 'd3';
+
+
 
 const defaultConf = {
   width: 700,
@@ -22,8 +25,8 @@ const defaultConf = {
   defaultTrackWidth: 10
 }
 
-const zoom = d3.zoom().scaleExtent([1,2]).on("zoom", function() {
-  d3.select('.all').attr("transform", d3.event.transform)
+const zoom_handler = zoom().scaleExtent([1,2]).on("zoom", function() {
+  select('.all').attr("transform", event.transform)
 });
 
 
@@ -46,22 +49,22 @@ class Core {
     this.conf = defaultsDeep(conf, defaultConf)
 
     // Apply style for positioning button
-    const container = d3.select(this.conf.container).style('position', 'relative');
+    const container = select(this.conf.container).style('position', 'relative');
     this.svg = container.append('svg')
     console.warn('this.conf', this.conf)
     console.warn('conf', conf)
     if (conf.enableZoomPan === true) {
     // Apply zoom & pan handler
-      this.svg.attr('id', 'svg-child').call(zoom)
-      this.svg.call(zoom.transform, d3.zoomIdentity.translate(conf.width/2, conf.height/2));
+      this.svg.attr('id', 'svg-child').call(zoom_handler)
+      this.svg.call(zoom_handler.transform, zoomIdentity.translate(conf.width/2, conf.height/2));
 
       // Reset to center on dbl click
-      this.svg.on('dblclick.zoom', function(){d3.select('#svg-child').call(zoom.transform, d3.zoomIdentity.translate(conf.width/2, conf.height/2));})
+      this.svg.on('dblclick.zoom', function(){select('#svg-child').call(zoom_handler.transform, zoomIdentity.translate(conf.width/2, conf.height/2));})
     }
 
     if (conf.enableDownloadSVG === true) {
     // Add svg download button
-    const button_svg = d3.select('#' + this.conf.container.id).append("button")
+    const button_svg = select('#' + this.conf.container.id).append("button")
       .style('position', 'absolute')
       .style('top', '5%')
       .style('right', '5%')
@@ -74,13 +77,13 @@ class Core {
     }
 
     
-    if (d3.select('body').select('.circos-tooltip').empty()) {
-      this.tip = d3.select('body').append('div')
+    if (select('body').select('.circos-tooltip').empty()) {
+      this.tip = select('body').append('div')
       .attr('class', 'circos-tooltip')
       .attr('position', 'fixed')
       .style('opacity', 0)
     } else {
-      this.tip = d3.select('body').select('.circos-tooltip')
+      this.tip = select('body').select('.circos-tooltip')
     }
 
     this.clipboard = initClipboard(this.conf.container)
@@ -151,8 +154,8 @@ class Core {
   render (ids, removeTracks) {
     render(ids, removeTracks, this)
   }
+  
 }
-
 
 const Circos = (conf) => {
   const instance = new Core(conf)
