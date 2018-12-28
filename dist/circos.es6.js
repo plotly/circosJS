@@ -10511,8 +10511,6 @@ var Core = function () {
     // Apply style for positioning button
     var container = (0, _d3Selection.select)(this.conf.container).style('position', 'relative');
     this.svg = container.append('svg');
-    console.warn('this.conf', this.conf);
-    console.warn('conf', conf);
     if (conf.enableZoomPan === true) {
       // Apply zoom & pan handler
       this.svg.attr('id', 'svg-child').call(zoom_handler);
