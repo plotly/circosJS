@@ -10510,10 +10510,10 @@ var Core = function () {
 
     // Apply style for positioning button
     var container = (0, _d3Selection.select)(this.conf.container).style('position', 'relative');
-    this.svg = container.append('svg');
+    this.svg = container.append('svg').attr('id', 'svg-child');
     if (conf.enableZoomPan === true) {
       // Apply zoom & pan handler
-      this.svg.attr('id', 'svg-child').call(zoom_handler);
+      this.svg.call(zoom_handler);
       this.svg.call(zoom_handler.transform, _d3Zoom.zoomIdentity.translate(conf.width / 2, conf.height / 2));
 
       // Reset to center on dbl click
@@ -19600,7 +19600,7 @@ exports = module.exports = __webpack_require__(471)(false);
 
 
 // module
-exports.push([module.i, "div.circos-tooltip {\r\n  position: absolute;\r\n  text-align: center;\r\n  padding: 5px 10px;\r\n  background: #111111;\r\n  color: white;\r\n  border: 0px;\r\n  pointer-events: none;\r\n  z-index: 1000;\r\n}\r\n", ""]);
+exports.push([module.i, "div.circos-tooltip {\n  position: absolute;\n  text-align: center;\n  padding: 5px 10px;\n  background: #111111;\n  color: white;\n  border: 0px;\n  pointer-events: none;\n  z-index: 1000;\n}\n", ""]);
 
 // exports
 
