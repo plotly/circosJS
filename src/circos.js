@@ -50,10 +50,10 @@ class Core {
 
     // Apply style for positioning button
     const container = select(this.conf.container).style('position', 'relative');
-    this.svg = container.append('svg')
+    this.svg = container.append('svg').attr('id', 'svg-child')
     if (conf.enableZoomPan === true) {
       // Apply zoom & pan handler
-      this.svg.attr('id', 'svg-child').call(zoom_handler)
+      this.svg.call(zoom_handler)
       this.svg.call(zoom_handler.transform, zoomIdentity.translate(conf.width / 2, conf.height / 2));
 
       // Reset to center on dbl click
