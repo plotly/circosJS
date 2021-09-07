@@ -10530,7 +10530,7 @@ var Core = function () {
     }
 
     if ((0, _d3Selection.select)('body').select('.circos-tooltip').empty()) {
-      this.tip = (0, _d3Selection.select)('body').append('div').attr('class', 'circos-tooltip').style('position', 'fixed').style('opacity', 0);
+      this.tip = (0, _d3Selection.select)('body').append('div').attr('class', 'circos-tooltip').style('opacity', 0);
     } else {
       this.tip = (0, _d3Selection.select)('body').select('.circos-tooltip');
     }
